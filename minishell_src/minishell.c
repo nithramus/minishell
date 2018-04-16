@@ -5,6 +5,11 @@ extern char **environ;
 static const t_command list_command[] = {
     { "setenv", ft_setenv },
     { "env", ft_env },
+    { "unsetenv", ft_unsetenv },
+    { "cd", ft_cd },
+    { "pwd", ft_pwd },
+    { "echo", ft_echo },
+    { "exit", ft_exit }
 };
 
 void    ft_strreplace(char *string, char searched, char replace) 
@@ -18,18 +23,6 @@ void    ft_strreplace(char *string, char searched, char replace)
         {
             string[i] = replace;
         }
-        i++;
-    }
-}
-
-void print_tab(char **tab)
-{
-    int i;
-
-    i = 0;
-    while (tab[i])
-    {
-        ft_putendl(tab[i]);
         i++;
     }
 }
@@ -48,8 +41,8 @@ void    init(char **environ, t_libft_chained_list **env)
     *env = NULL;
     while (environ[i])
     {
-        if(!(envvariable = (char*)malloc(ft_strlen(environ[i]))))
-            quit_clean();
+        if(!(envvariable = (char*)malloc(ft_strlen(environ[i]) + 1)))
+            quit_clean();   
         ft_strcpy(envvariable, environ[i]);
         add_back_maillon(env, envvariable);
         i++;
@@ -63,7 +56,7 @@ int     testcommand(char **command, t_libft_chained_list **env, char **path)
     int i;
 
     i = 0;
-    while (i < 2)
+    while (i < 7)
     {
         if (ft_strcmp(command[0], list_command[i].name) == 0)
         {
@@ -75,42 +68,39 @@ int     testcommand(char **command, t_libft_chained_list **env, char **path)
     return 0;
 }
 
-int main(int argc, char **argv) {
-    char *line;
+
+
+int main() {
     char **command;
     char buff[500];
+    char path[PATH_MAX];
     t_libft_chained_list *env;
-    line = NULL;
-    argc +=1;
-    char *path;
     int line_return;
 
-    argv++;
     env = NULL;
-    path = malloc(PATH_MAX);
-    path = getcwd(path, PATH_MAX);
+    if (!getcwd(path, PATH_MAX))
+        return 1;
     init(environ, &env);
     while (1)
     {
+        ft_putstr("$>");
+        if (!(getcwd(path, PATH_MAX)))
+            return 1;
         line_return = read(0,buff, 499);
         buff[line_return - 1] = '\0';
-        line = buff;
-        ft_putendl(line);
-        ft_putendl("command");  
         if (line_return != 0)
         {
-            ft_printf("%d\n", line_return);
-            if (!line)
-                ft_putendl("NULL line");
-            else
-            {
-                ft_strreplace(line, '\t', ' ');
-                command = ft_strsplit(line, ' ');
-                print_tab(command);
-                if (command && command[0])
-                    testcommand(command, &env, &path);
-                    // execute_binary(line, argv);
-            }
+            ft_strreplace(buff, '\t', ' ');
+            command = ft_strsplit(buff, ' ');
+            // if (command && command[0])
+            //     if (!testcommand(command, &env, (char**)&(path)))
+            //     {
+            //         // execute_binary(&env, command);
+            //     }
+            ft_bzero(buff, 500);
+            freechartab(command);
+            delete_chained_list(&env, free);
+            exit(0);
         }
     }
 }

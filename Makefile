@@ -20,6 +20,9 @@ SRC = minishell.o\
 	  execute_binary.o\
 	  env.o\
 	  utils.o\
+	  cd.o\
+	  echo.o\
+	  exit.o\
 
 CC = gcc -g 
 
