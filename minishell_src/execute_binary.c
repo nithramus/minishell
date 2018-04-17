@@ -52,7 +52,7 @@ char **create_env(t_libft_chained_list **env)
 
     elems = 0;
     function_on_chained_list(env, count, &elems);
-    env_list = malloc(sizeof(char*) * (elems + 1));
+    env_list = mem_stock(sizeof(char*) * (elems + 1));
     env_list[elems] = NULL;
     elem.count = 0;
     elem.list = env_list;
@@ -73,7 +73,7 @@ char *find_valid_path(char **parsedpath, char *command)
         {
             return (fullpath);
         }
-        free(fullpath);
+        // free(fullpath);
         i++;
     }
     return NULL;
@@ -115,7 +115,7 @@ void exec_bin(char *path_to_binary, char **parameters, char **env_list)
     else
     {
         execve(path_to_binary, parameters, env_list);
-        free(path_to_binary);        
+        // free(path_to_binary);        
     }
 }
 

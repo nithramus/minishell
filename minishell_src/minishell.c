@@ -47,7 +47,6 @@ void    init(char **environ, t_libft_chained_list **env)
         add_back_maillon(env, envvariable);
         i++;
     }
-        // simple_function_on_chained_list(env, ft_putendl);
 
 }
 
@@ -92,15 +91,13 @@ int main() {
         {
             ft_strreplace(buff, '\t', ' ');
             command = ft_strsplit(buff, ' ');
-            // if (command && command[0])
-            //     if (!testcommand(command, &env, (char**)&(path)))
-            //     {
-            //         // execute_binary(&env, command);
-            //     }
+            if (command && command[0])
+                if (!testcommand(command, &env, (char**)&(path)))
+                {
+                    execute_binary(&env, command);
+                }
             ft_bzero(buff, 500);
-            freechartab(command);
-            delete_chained_list(&env, free);
-            exit(0);
+            mem_stock_free();
         }
     }
 }
