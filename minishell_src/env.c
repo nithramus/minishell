@@ -40,7 +40,7 @@ void delete_env_parameter(t_libft_chained_list **env, t_libft_chained_list *mail
     }
 }
 
-void ft_setenv(t_libft_chained_list **env, char **path, char **command)
+void ft_setenv(t_libft_chained_list **env, char *path, char **command)
 {
     t_env params;
     if (countarguments(command) != 3)
@@ -60,7 +60,7 @@ void ft_setenv(t_libft_chained_list **env, char **path, char **command)
 
 }
 
-void ft_unsetenv(t_libft_chained_list **env, char **path, char **command)
+void ft_unsetenv(t_libft_chained_list **env, char *path, char **command)
 {
     t_env params;
 
@@ -74,7 +74,7 @@ void ft_unsetenv(t_libft_chained_list **env, char **path, char **command)
 
 }
 
-void ft_env(t_libft_chained_list **env, char **path, char **command)
+void ft_env(t_libft_chained_list **env, char *path, char **command)
 {
     simple_function_on_chained_list(env, (void (*)(void *))ft_putendl);
     do_nothing((void*)path);

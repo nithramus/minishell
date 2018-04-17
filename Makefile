@@ -6,7 +6,7 @@
 #    By: bandre <bandre@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/07 16:17:12 by bandre            #+#    #+#              #
-#    Updated: 2018/04/12 19:01:27 by bandre           ###   ########.fr        #
+#    Updated: 2018/04/17 16:33:17 by bandre           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ SRC = minishell.o\
 
 CC = gcc -g 
 
-FLAG = #-Wall -Wextra -Werror -O
+FLAG = -Wall -Wextra -Werror -O
 
 LIB = libft/libftprintf.a libft_chained_list/libft_chained_list.a
 
@@ -47,10 +47,14 @@ EXEC:
 clean:
 	rm -f $(addprefix $(OBJ_PATH)/,$(SRC))
 	make -C libft clean
+	make -C libft_chained_list clean
+	
 
 fclean: clean
 	rm -f $(NAME)
 	make -C libft fclean
+	make -C libft_chained_list fclean
+
 
 re: fclean all
 

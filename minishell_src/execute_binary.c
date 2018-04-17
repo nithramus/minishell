@@ -52,7 +52,7 @@ char **create_env(t_libft_chained_list **env)
 
     elems = 0;
     function_on_chained_list(env, count, &elems);
-    env_list = mem_stock(sizeof(char*) * (elems + 1));
+    env_list = malloc(sizeof(char*) * (elems + 1));
     env_list[elems] = NULL;
     elem.count = 0;
     elem.list = env_list;

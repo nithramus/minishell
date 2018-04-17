@@ -13,7 +13,7 @@ void print_tab(char **tab)
     ft_putendl("");
 }
 
-void ft_echo(t_libft_chained_list **env, char **path, char **command)
+void ft_echo(t_libft_chained_list **env, char *path, char **command)
 {
     print_tab(command);
     do_nothing((void*)env);

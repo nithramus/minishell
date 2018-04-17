@@ -50,7 +50,7 @@ void    init(char **environ, t_libft_chained_list **env)
 
 }
 
-int     testcommand(char **command, t_libft_chained_list **env, char **path)
+int     testcommand(char **command, t_libft_chained_list **env, char *path)
 {
     int i;
 
@@ -67,37 +67,34 @@ int     testcommand(char **command, t_libft_chained_list **env, char **path)
     return 0;
 }
 
-
-
 int main() {
     char **command;
     char buff[500];
-    char path[PATH_MAX];
+    char path[4097];
     t_libft_chained_list *env;
     int line_return;
 
     env = NULL;
-    if (!getcwd(path, PATH_MAX))
+    if (!getcwd(path, 4096))
         return 1;
     init(environ, &env);
     while (1)
     {
         ft_putstr("$>");
-        if (!(getcwd(path, PATH_MAX)))
+        if (!getcwd(path, 4096))
             return 1;
         line_return = read(0,buff, 499);
-        buff[line_return - 1] = '\0';
         if (line_return != 0)
         {
+        	buff[line_return - 1] = '\0';
             ft_strreplace(buff, '\t', ' ');
             command = ft_strsplit(buff, ' ');
             if (command && command[0])
-                if (!testcommand(command, &env, (char**)&(path)))
+                if (!testcommand(command, &env, path))
                 {
                     execute_binary(&env, command);
                 }
             ft_bzero(buff, 500);
-            mem_stock_free();
         }
     }
 }
