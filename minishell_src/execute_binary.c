@@ -1,6 +1,8 @@
 #include "minishell.h"
 
-            void do_nothing(void *params)
+extern int PID;
+
+void do_nothing(void *params)
 {
     params += 1-1;
 }
@@ -73,7 +75,7 @@ char *find_valid_path(char **parsedpath, char *command)
         {
             return (fullpath);
         }
-        // free(fullpath);
+        free(fullpath);
         i++;
     }
     return NULL;
@@ -98,6 +100,7 @@ char *find_path_to_binary(t_libft_chained_list **env, char **command)
     if (parsed_path)
     {
         valid_path = find_valid_path(parsed_path, command[0]);
+		freechartab(parsed_path);
         return (valid_path);
     }
     return (NULL);
@@ -105,17 +108,20 @@ char *find_path_to_binary(t_libft_chained_list **env, char **command)
 
 void exec_bin(char *path_to_binary, char **parameters, char **env_list)
 {
-    int is_father;
+    int son_pid;
     int status;
 
     status = 0;
-    is_father = fork();
-    if (is_father > 0)
+    son_pid = fork();
+    if (son_pid > 0)
+	{
+		PID = son_pid;
         wait(&status);
+		PID = 0;
+	}
     else
     {
         execve(path_to_binary, parameters, env_list);
-        // free(path_to_binary);        
     }
 }
 
@@ -134,4 +140,6 @@ void execute_binary(t_libft_chained_list **env, char **command)
     {
         ft_printf("minishell: command not found: %s\n", command[0]);
     }
+	free(env_list);
+	free(path_to_binary);
 }

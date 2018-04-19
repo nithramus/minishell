@@ -1,6 +1,7 @@
 #include "minishell.h"
 
 extern char **environ;
+int PID;
 
 static const t_command list_command[] = {
     { "setenv", ft_setenv },
@@ -27,8 +28,9 @@ void    ft_strreplace(char *string, char searched, char replace)
     }
 }
 
-void quit_clean() 
+void quit_clean(t_libft_chained_list **env) 
 {
+	delete_chained_list(env, free);
     exit(0);
 }
 
@@ -42,7 +44,7 @@ void    init(char **environ, t_libft_chained_list **env)
     while (environ[i])
     {
         if(!(envvariable = (char*)malloc(ft_strlen(environ[i]) + 1)))
-            quit_clean();   
+            quit_clean(env);   
         ft_strcpy(envvariable, environ[i]);
         add_back_maillon(env, envvariable);
         i++;
@@ -67,6 +69,19 @@ int     testcommand(char **command, t_libft_chained_list **env, char *path)
     return 0;
 }
 
+void sig_handler(int signo)
+{
+	signo += 1-1;
+	if (PID > 0)
+	{
+		kill(PID,SIGINT );
+		PID = 0;
+		ft_putendl("");
+	}
+	else
+		ft_putstr("\nUse exit to quit\n$>");
+}
+
 int main() {
     char **command;
     char buff[500];
@@ -74,15 +89,18 @@ int main() {
     t_libft_chained_list *env;
     int line_return;
 
+	signal(SIGINT, sig_handler);
     env = NULL;
     if (!getcwd(path, 4096))
         return 1;
     init(environ, &env);
     while (1)
     {
-        ft_putstr("$>");
+        
         if (!getcwd(path, 4096))
             return 1;
+		ft_putstr(path);
+		ft_putstr(" $>");
         line_return = read(0,buff, 499);
         if (line_return != 0)
         {
@@ -94,7 +112,10 @@ int main() {
                 {
                     execute_binary(&env, command);
                 }
+			if (!command)
+				ft_exit(&env, path, command);
             ft_bzero(buff, 500);
+			freechartab(command);
         }
     }
 }

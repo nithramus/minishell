@@ -3,6 +3,7 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "../libft/libft/libft.h"
 #include "../libft_chained_list/libft_chained_list_src/libft_chained_list.h"
 
