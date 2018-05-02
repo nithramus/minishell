@@ -1,52 +1,64 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bandre <bandre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/05/02 19:57:06 by bandre            #+#    #+#             */
+/*   Updated: 2018/05/02 20:01:56 by bandre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void    ft_pwd(t_libft_chained_list **env, char *path, char **command)
+void	ft_pwd(t_libft_chained_list **env, char *path, char **command)
 {
-    ft_putendl(path);
-    do_nothing((void*)env);
-    do_nothing((void*)command);
-
+	ft_putendl(path);
+	do_nothing((void*)env);
+	do_nothing((void*)command);
 }
-char    *create_path(char *name, char *value)
-{
-    char *tmp;
-    char *final;
 
-    if (!(tmp = ft_strjoin(name, "/")))
+char	*create_path(char *name, char *value)
+{
+	char *tmp;
+	char *final;
+
+	if (!(tmp = ft_strjoin(name, "/")))
 		return (NULL);
-    if (!(final = ft_strjoin(tmp, value)))
+	if (!(final = ft_strjoin(tmp, value)))
 		return (NULL);
 	free(tmp);
-    return final;
+	return (final);
 }
 
-void    ft_cd(t_libft_chained_list **env, char *path, char **command)
+void	ft_cd(t_libft_chained_list **env, char *path, char **command)
 {
-    char *new_path;
-    int status;
-    t_search searched;
-    t_env params;
-	int new_path_free;
+	char		*new_path;
+	int			status;
+	t_search	searched;
+	t_env		params;
+	int			new_path_free;
 
 	new_path_free = 0;
-    if (countarguments(command) == 1 || ft_strcmp(command[1], "~") == 0)
-    {
-        searched.searched = "HOME";
-        searched.result = NULL;
-        function_on_chained_list(env, search, &searched);
-        if (!searched.result)
-            return;
-        new_path = searched.result;
-    }
-    else
-    {
+	if (countarguments(command) == 1 || ft_strcmp(command[1], "~") == 0)
+	{
+		searched.searched = "HOME";
+		searched.result = NULL;
+		function_on_chained_list(env, search, &searched);
+		if (!searched.result)
+			return ;
+		new_path = searched.result;
+	}
+	else
+	{
 		if (ft_strcmp(command[1], "-") == 0)
 		{
 			searched.searched = "OLDPWD";
-        	searched.result = NULL;
+			searched.result = NULL;
 			function_on_chained_list(env, search, &searched);
 			if (!searched.result)
-				return;
+				return ;
 			new_path = searched.result;
 		}
 		else if (command[1][0] == '/')
@@ -55,13 +67,13 @@ void    ft_cd(t_libft_chained_list **env, char *path, char **command)
 		}
 		else
 		{
-        	if (!(new_path = create_path(path, command[1])))
-				return;
+			if (!(new_path = create_path(path, command[1])))
+				return ;
 			new_path_free = 1;
 		}
-    }
-    status = chdir(new_path);
-    if (status == -1)
+	}
+	status = chdir(new_path);
+	if (status == -1)
 	{
 		if (access(new_path, F_OK) == -1)
 			ft_putstr("cd: no such file or directory\n");
@@ -72,18 +84,17 @@ void    ft_cd(t_libft_chained_list **env, char *path, char **command)
 		if (new_path_free)
 			free(new_path);
 	}
-    else
-    {
-        params.found = 0;
-        params.envname = "OLDPWD";
-        params.newenv = create_env_parameter("OLDPWD", path);
+	else
+	{
+		params.found = 0;
+		params.envname = "OLDPWD";
+		params.newenv = create_env_parameter("OLDPWD", path);
 		searched.searched = "OLDPWD";
-        searched.result = NULL;
-        function_on_chained_list(env, search, &searched);
+		searched.result = NULL;
+		function_on_chained_list(env, search, &searched);
 		if (searched.result)
-        	function_on_chained_list(env, update_env, &params);
+			function_on_chained_list(env, update_env, &params);
 		else
 			add_back_maillon(env, params.newenv);
-    }
-
+	}
 }
